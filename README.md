@@ -66,8 +66,9 @@ Anexe as seguintes policies gerenciadas:
 - CloudWatchAgentAdminPolicy
 - CloudWatchAgentServerPolicy
 - CloudWatchReadOnlyAccess
+- AmazonEC2ReadOnlyAccess
 
-Essa Role permitirá que a instância consulte informações no **Amazon CloudWatch**.
+Essa Role permitirá que a instância consulte informações no **Amazon CloudWatch** e **Amazon EC2**.
 
 ---
 
@@ -150,6 +151,35 @@ O script `status.sh` é executado automaticamente via **cron**:
 Ou seja:
 
 **a cada 1 minuto o status da infraestrutura é atualizado.**
+
+## Troubleshooting
+
+Durante a execução do script `status.sh`, foi encontrado um erro de permissão ao tentar gerar o arquivo `status.json`.
+
+### Erro encontrado
+/home/ec2-user/status.sh: line 85: /var/www/html/status.json: Permission denied
+
+
+Esse erro ocorre porque o diretório `/var/www/html` pertence ao usuário `root`, utilizado pelo **Apache HTTP Server**, impedindo que o usuário `ec2-user` escreva arquivos nesse local.
+
+### Solução
+
+Alterar o proprietário do diretório para `ec2-user`:
+
+```bash
+sudo chown -R ec2-user:ec2-user /var/www/html
+
+```
+
+Após aplicar a correção, o script pode ser executado normalmente:
+
+/home/ec2-user/status.sh
+
+Resultado esperado
+
+O script gera corretamente o arquivo:
+
+/var/www/html/status.json
 
 ---
 
