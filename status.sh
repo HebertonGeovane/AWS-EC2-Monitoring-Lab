@@ -86,7 +86,7 @@ fi
 # (se CPU alarmar, considerar stopped)
 # ========================================
 
-if [ "$CPU_ALARM" == "ALARM" ]; then
+if [ "$CPU_ALARM" == "ALARM" ] || [ "$ERROR_ALARM" == "ALARM" ]; then
 INSTANCE_STATE="stopped"
 fi
 
