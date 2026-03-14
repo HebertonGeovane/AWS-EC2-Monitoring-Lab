@@ -21,7 +21,7 @@ REGION=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" \
 -s http://169.254.169.254/latest/meta-data/placement/region)
 
 # ========================================
-# ESTADO DA INSTÂNCIA
+# ESTADO REAL DA INSTÂNCIA
 # ========================================
 
 INSTANCE_STATE=$(aws ec2 describe-instances \
@@ -44,7 +44,10 @@ ERROR_ALARM=$(aws cloudwatch describe-alarms \
 --query "MetricAlarms[?AlarmName=='HighErrorCount'].StateValue" \
 --output text 2>/dev/null)
 
-# Se não existir ainda
+# ========================================
+# TRATAMENTO DE ALARMES NÃO EXISTENTES
+# ========================================
+
 if [ -z "$CPU_ALARM" ]; then
 CPU_ALARM="not_created"
 fi
@@ -76,6 +79,15 @@ SNS_STATUS="Aguardando eventos"
 
 if [ "$CPU_ALARM" == "ALARM" ] || [ "$ERROR_ALARM" == "ALARM" ]; then
 SNS_STATUS="Notificação enviada"
+fi
+
+# ========================================
+# SIMULAÇÃO DA AÇÃO CORRETIVA
+# (se CPU alarmar, considerar stopped)
+# ========================================
+
+if [ "$CPU_ALARM" == "ALARM" ]; then
+INSTANCE_STATE="stopped"
 fi
 
 # ========================================
