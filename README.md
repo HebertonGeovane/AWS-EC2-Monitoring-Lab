@@ -173,6 +173,8 @@ sudo chown -R ec2-user:ec2-user /var/www/html
 
 Após aplicar a correção, o script pode ser executado normalmente:
 
+ls -l /home/ec2-user/status.sh
+
 /home/ec2-user/status.sh
 
 Resultado esperado
