@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Dashboard de Monitoramento EC2</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
+        rel="stylesheet"
+    />
+
+    <style>
+        body {
+            font-family: "Poppins", sans-serif;
+        }
+
+        .blink {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-slate-900 text-white flex flex-col min-h-screen">
+
+    <!-- CONTAINER -->
+
+    <div class="max-w-7xl mx-auto p-10 flex-grow">
+
+        <!-- TÍTULO -->
+
+        <h1 class="text-4xl font-bold mb-10 text-center">
+            Dashboard de Monitoramento AWS
+        </h1>
+
+        <!-- GRID PRINCIPAL -->
+
+        <div class="grid md:grid-cols-3 gap-6">
+
+            <!-- INSTÂNCIA -->
+
+            <div class="bg-slate-800 p-6 rounded-xl shadow-lg">
+
+                <h2 class="text-xl font-semibold mb-4">
+                    Instância EC2
+                </h2>
+
+                <p>
+                    <strong>ID:</strong>
+                    <span id="instanceId">Carregando...</span>
+                </p>
+
+                <p>
+                    <strong>Região:</strong>
+                    <span id="region">Carregando...</span>
+                </p>
+
+                <p>
+                    <strong>AZ:</strong>
+                    <span id="az">Carregando...</span>
+                </p>
+
+                <p>
+                    <strong>Status:</strong>
+                    <span id="instanceState">Carregando...</span>
+                </p>
+
+            </div>
+
+            <!-- ALARM ERROR -->
+
+            <div class="bg-slate-800 p-6 rounded-xl shadow-lg">
+
+                <h2 class="text-xl font-semibold mb-4">
+                    CloudWatch Alarm (ERROR)
+                </h2>
+
+                <p id="errorStatus" class="text-green-400 font-semibold">
+                    OK
+                </p>
+
+            </div>
+
+            <!-- ALARM CPU -->
+
+            <div class="bg-slate-800 p-6 rounded-xl shadow-lg">
+
+                <h2 class="text-xl font-semibold mb-4">
+                    CloudWatch Alarm (CPU)
+                </h2>
+
+                <p id="cpuStatus" class="text-green-400 font-semibold">
+                    OK
+                </p>
+
+            </div>
+
+            <!-- SNS -->
+
+            <div class="bg-slate-800 p-6 rounded-xl shadow-lg">
+
+                <h2 class="text-xl font-semibold mb-4">
+                    SNS Notificação
+                </h2>
+
+                <p>
+                    Status:
+                    <span id="snsStatus" class="text-green-400">
+                        Aguardando eventos
+                    </span>
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- STATUS GLOBAL -->
+
+        <div class="mt-10 text-center">
+
+            <p id="globalStatus" class="text-green-400 text-xl font-semibold">
+                Sistema funcionando normalmente
+            </p>
+
+        </div>
+
+        <!-- BOTÃO VALIDAÇÃO -->
+
+        <div class="text-center mt-12">
+
+            <a href="validation.html">
+
+                <button
+                    class="bg-yellow-500 hover:bg-yellow-600 transition transform hover:scale-105 text-black px-8 py-3 rounded-lg font-semibold shadow-lg"
+                >
+                    Validar Monitoramento
+                </button>
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+
+    <footer class="bg-slate-900 py-8 px-6 flex flex-col items-center gap-6 border-t border-slate-700">
+
+        <div class="flex gap-8 text-3xl">
+
+            <a
+                href="https://github.com/HebertonGeovane"
+                target="_blank"
+                class="transition transform hover:scale-125"
+            >
+
+                <img
+                    src="https://cdn-icons-png.flaticon.com/512/25/25231.png"
+                    alt="GitHub"
+                    class="w-10 h-10 hover:opacity-80"
+                />
+
+            </a>
+
+            <a
+                href="https://linkedin.com/in/heberton-geovane"
+                target="_blank"
+                class="transition transform hover:scale-125"
+            >
+
+                <img
+                    src="https://cdn-icons-png.flaticon.com/512/174/174857.png"
+                    alt="LinkedIn"
+                    class="w-10 h-10 hover:opacity-80"
+                />
+
+            </a>
+
+        </div>
+
+        <p class="text-sm text-gray-400 text-center">
+            © 2025 Monitoramento e Logs no Amazon EC2 — Criado por Heberton Geovane
+        </p>
+
+    </footer>
+
+    <!-- SCRIPT -->
+
+    <script>
+
+        async function loadStatus() {
+
+            const response = await fetch("status.json");
+            const data = await response.json();
+
+            document.getElementById("instanceId").innerText = data.instanceId;
+            document.getElementById("region").innerText = data.region;
+            document.getElementById("az").innerText = data.az;
+            document.getElementById("instanceState").innerText = data.state;
+
+            if (data.errorAlarm === "ALARM") {
+
+                document.getElementById("errorStatus").innerText = "ALARM";
+
+                document.getElementById("errorStatus").className =
+                    "text-red-400 blink";
+
+                document.getElementById("globalStatus").innerText =
+                    "Erro detectado nos logs";
+
+                document.getElementById("snsStatus").innerText =
+                    "Notificação enviada";
+
+            }
+
+            if (data.cpuAlarm === "ALARM") {
+
+                document.getElementById("cpuStatus").innerText = "ALARM";
+
+                document.getElementById("cpuStatus").className =
+                    "text-red-400 blink";
+
+                document.getElementById("globalStatus").innerText =
+                    "CPU acima do limite";
+
+                document.getElementById("snsStatus").innerText =
+                    "Notificação enviada";
+
+            }
+
+        }
+
+        loadStatus();
+
+        setInterval(loadStatus, 5000);
+
+    </script>
+
+</body>
+</html>

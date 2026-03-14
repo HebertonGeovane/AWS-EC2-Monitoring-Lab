@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Monitoramento e Logs no Amazon EC2</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+
+</head>
+
+<body class="bg-slate-900 text-white flex flex-col min-h-screen">
+
+    <div class="max-w-7xl mx-auto px-6 py-10 flex-grow">
+
+        <!-- Título -->
+
+        <h1 class="text-4xl md:text-5xl font-bold text-center mb-6">
+            Monitoramento e Logs no Amazon EC2
+        </h1>
+
+        <p class="text-center text-gray-400 mb-12 text-lg">
+            Laboratório prático utilizando Amazon EC2, CloudWatch, Metric Filters e SNS
+        </p>
+
+        <!-- Arquitetura -->
+
+        <div class="bg-slate-800 p-8 rounded-xl shadow-xl mb-12">
+
+            <h2 class="text-2xl font-semibold mb-8 text-center">
+                Arquitetura de Monitoramento AWS
+            </h2>
+
+            <div class="flex justify-center">
+
+                <img
+                    src="assets/architecture-monitoring.png"
+                    alt="Arquitetura AWS Monitoramento"
+                    class="rounded-xl shadow-lg border border-slate-700 max-w-full"
+                >
+
+            </div>
+
+        </div>
+
+        <!-- Conteúdo -->
+
+        <div class="grid md:grid-cols-2 gap-10">
+
+            <!-- Passo a passo -->
+
+            <div class="bg-slate-800 p-8 rounded-xl shadow-lg">
+
+                <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1828/1828919.png" class="w-6">
+                    Passo a passo da atividade
+                </h2>
+
+                <ol class="list-decimal list-inside space-y-3 text-gray-300">
+
+                    <li>Atualizar a instância EC2</li>
+
+                    <li>Instalar o CloudWatch Agent</li>
+
+                    <li>Configurar coleta de logs</li>
+
+                    <li>Criar Log Group no CloudWatch</li>
+
+                    <li>Criar Metric Filter para detectar ERROR</li>
+
+                    <li>Criar Alarme HighErrorCount</li>
+
+                    <li>Criar tópico SNS</li>
+
+                    <li>Gerar logs de erro</li>
+
+                    <li>Criar alarme de CPU HighCPUUsage</li>
+
+                    <li>Gerar stress de CPU</li>
+
+                </ol>
+
+            </div>
+
+            <!-- Objetivo -->
+
+            <div class="bg-slate-800 p-8 rounded-xl shadow-lg">
+
+                <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" class="w-6">
+                    Objetivo do laboratório
+                </h2>
+
+                <p class="text-gray-300 mb-6">
+                    Implementar um sistema completo de monitoramento de logs e métricas utilizando serviços AWS.
+                </p>
+
+                <ul class="space-y-3 text-gray-300">
+
+                    <li class="flex items-center gap-2">
+                        <img src="https://cdn-icons-png.flaticon.com/512/845/845646.png" class="w-5">
+                        Logs enviados para CloudWatch
+                    </li>
+
+                    <li class="flex items-center gap-2">
+                        <img src="https://cdn-icons-png.flaticon.com/512/845/845646.png" class="w-5">
+                        Metric Filter detecta ERROR
+                    </li>
+
+                    <li class="flex items-center gap-2">
+                        <img src="https://cdn-icons-png.flaticon.com/512/845/845646.png" class="w-5">
+                        Alarmes configurados
+                    </li>
+
+                    <li class="flex items-center gap-2">
+                        <img src="https://cdn-icons-png.flaticon.com/512/845/845646.png" class="w-5">
+                        Notificação via SNS
+                    </li>
+
+                    <li class="flex items-center gap-2">
+                        <img src="https://cdn-icons-png.flaticon.com/512/845/845646.png" class="w-5">
+                        Monitoramento de CPU
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+        <!-- Botão -->
+
+        <div class="text-center mt-12">
+
+            <a href="monitor.html">
+
+                <button class="bg-yellow-500 hover:bg-yellow-600 transition transform hover:scale-105 text-black px-10 py-4 rounded-xl text-lg font-semibold shadow-lg">
+                    Iniciar Monitoramento
+                </button>
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+
+    <footer class="bg-slate-900 py-8 px-6 flex flex-col items-center gap-6 border-t border-slate-700">
+
+        <div class="flex gap-8 text-3xl">
+
+            <a
+                href="https://github.com/HebertonGeovane"
+                target="_blank"
+                class="transition transform hover:scale-125"
+            >
+
+                <img
+                    src="https://cdn-icons-png.flaticon.com/512/25/25231.png"
+                    alt="GitHub"
+                    class="w-10 h-10 hover:opacity-80"
+                >
+
+            </a>
+
+            <a
+                href="https://linkedin.com/in/heberton-geovane"
+                target="_blank"
+                class="transition transform hover:scale-125"
+            >
+
+                <img
+                    src="https://cdn-icons-png.flaticon.com/512/174/174857.png"
+                    alt="LinkedIn"
+                    class="w-10 h-10 hover:opacity-80"
+                >
+
+            </a>
+
+        </div>
+
+        <p class="text-sm text-gray-400 text-center">
+            © 2025 Monitoramento e Logs no Amazon EC2 — Criado por Heberton Geovane
+        </p>
+
+    </footer>
+
+</body>
+</html>

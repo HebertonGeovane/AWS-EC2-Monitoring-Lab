@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Validação do Monitoramento</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .modal-bg {
+            background: rgba(0, 0, 0, 0.8);
+        }
+    </style>
+</head>
+
+<body class="bg-slate-900 text-white flex flex-col min-h-screen">
+
+    <div class="max-w-3xl mx-auto p-10 flex-grow">
+
+        <h1 class="text-4xl font-bold text-center mb-10">
+            Validação do Monitoramento
+        </h1>
+
+        <!-- FORMULÁRIO -->
+
+        <div class="bg-slate-800 p-8 rounded-xl shadow-lg">
+
+            <h2 class="text-2xl font-semibold mb-6">
+                Formulário de Validação
+            </h2>
+
+            <form id="validationForm" class="space-y-6">
+
+                <!-- CLOUDWATCH ALARM -->
+
+                <div>
+
+                    <label class="block mb-2 font-semibold">
+                        Nome do Alarme do CloudWatch
+                    </label>
+
+                    <p class="text-gray-400 text-sm mb-2">
+                        Exemplo esperado:
+                        <span class="text-yellow-400">HighCPUUsage</span>
+                    </p>
+
+                    <input
+                        id="alarmName"
+                        type="text"
+                        placeholder="Digite o nome do alarme criado no CloudWatch"
+                        class="w-full p-3 rounded bg-slate-700 border border-slate-600"
+                    />
+
+                </div>
+
+                <!-- INSTANCE ID -->
+
+                <div>
+
+                    <label class="block mb-2 font-semibold">
+                        ID da LabInstance
+                    </label>
+
+                    <p class="text-gray-400 text-sm mb-2">
+                        Exemplo:
+                        <span class="text-yellow-400">i-1234567890abcdef0</span>
+                    </p>
+
+                    <input
+                        id="instanceInput"
+                        type="text"
+                        placeholder="Digite o ID real da instância EC2"
+                        class="w-full p-3 rounded bg-slate-700 border border-slate-600"
+                    />
+
+                </div>
+
+                <!-- BOTÃO -->
+
+                <div class="text-center">
+
+                    <button
+                        type="button"
+                        onclick="validateForm()"
+                        class="bg-yellow-500 hover:bg-yellow-600 px-8 py-3 rounded-lg font-semibold text-black"
+                    >
+                        Validar
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <!-- RESULTADO -->
+
+        <div class="mt-8 bg-slate-800 p-6 rounded-xl shadow">
+
+            <h2 class="text-xl font-semibold mb-4">
+                Resultado da Validação
+            </h2>
+
+            <p id="validationResult" class="text-gray-300">
+                Aguardando validação...
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- MODAL DE SUCESSO -->
+
+    <div id="successModal" class="hidden fixed inset-0 modal-bg flex items-center justify-center">
+
+        <div class="bg-white text-black p-10 rounded-xl text-center max-w-md">
+
+            <h2 class="text-3xl font-bold mb-4">
+                🌟🌟🌟
+            </h2>
+
+            <p class="text-xl font-semibold mb-4">
+                🎉 Congratulações!
+            </p>
+
+            <p class="mb-6">
+                Você concluiu o Desafio
+                <strong>Monitoramento e Logs no Amazon EC2</strong>
+                com sucesso!
+            </p>
+
+            <p class="text-yellow-500 text-xl mb-6">
+                ⭐ ⭐ ⭐ ⭐ ⭐
+            </p>
+
+            <p>
+                🚀 Vamos para o próximo nível!
+            </p>
+
+            <button
+                onclick="closeModal()"
+                class="mt-6 bg-blue-500 text-white px-6 py-2 rounded"
+            >
+                Fechar
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+
+    <footer class="bg-slate-900 py-8 px-6 flex flex-col items-center gap-6 border-t border-slate-700">
+
+        <div class="flex gap-8 text-3xl">
+
+            <a
+                href="https://github.com/HebertonGeovane"
+                target="_blank"
+                class="transition transform hover:scale-125"
+            >
+
+                <img
+                    src="https://cdn-icons-png.flaticon.com/512/25/25231.png"
+                    alt="GitHub"
+                    class="w-10 h-10 hover:opacity-80"
+                />
+
+            </a>
+
+            <a
+                href="https://linkedin.com/in/heberton-geovane"
+                target="_blank"
+                class="transition transform hover:scale-125"
+            >
+
+                <img
+                    src="https://cdn-icons-png.flaticon.com/512/174/174857.png"
+                    alt="LinkedIn"
+                    class="w-10 h-10 hover:opacity-80"
+                />
+
+            </a>
+
+        </div>
+
+        <p class="text-sm text-gray-400 text-center">
+            © 2025 Monitoramento e Logs no Amazon EC2 — Criado por Heberton Geovane
+        </p>
+
+    </footer>
+
+    <script>
+
+        let instanceIdReal = ""
+        let instanceState = ""
+        let alarmCPU = ""
+
+        async function loadStatus() {
+
+            let response = await fetch("status.json")
+
+            let data = await response.json()
+
+            instanceIdReal = data.instanceId
+            instanceState = data.state
+            alarmCPU = data.cpuAlarm
+
+        }
+
+        loadStatus()
+
+        function validateForm() {
+
+            let alarmInput = document.getElementById("alarmName").value.trim()
+            let instanceInput = document.getElementById("instanceInput").value.trim()
+
+            let result = document.getElementById("validationResult")
+
+            if (alarmInput === "") {
+
+                result.innerHTML = "⚠️ A entrada está faltando. Por favor, forneça o nome do Alarme do CloudWatch que você criou como parte da validação."
+
+                return
+
+            }
+
+            if (alarmInput !== "HighCPUUsage") {
+
+                result.innerHTML = "❌ Nome do alarme do CloudWatch não encontrado."
+
+                return
+
+            }
+
+            if (instanceInput === "") {
+
+                result.innerHTML = "⚠️ Informe o ID da LabInstance."
+
+                return
+
+            }
+
+            if (instanceInput !== instanceIdReal) {
+
+                result.innerHTML = "❌ ID de LabInstance não encontrado."
+
+                return
+
+            }
+
+            if (instanceState !== "stopped") {
+
+                result.innerHTML = "⚠️ System Admin ação corretiva não executada (stop instance)."
+
+                return
+
+            }
+
+            showSuccess()
+
+        }
+
+        function showSuccess() {
+
+            document.getElementById("successModal").classList.remove("hidden")
+
+        }
+
+        function closeModal() {
+
+            document.getElementById("successModal").classList.add("hidden")
+
+        }
+
+    </script>
+
+</body>
+
+</html>
